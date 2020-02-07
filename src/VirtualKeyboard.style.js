@@ -4,8 +4,8 @@ const { height, width } = Dimensions.get('window');
 module.exports = StyleSheet.create({
 	container: {
 		marginTop: 20,
-		marginLeft: 30,
-		marginRight: 30,
+		marginLeft: 0,
+		marginRight: 0,
 		alignItems: 'flex-start',
 	},
 	row: {
@@ -13,7 +13,7 @@ module.exports = StyleSheet.create({
 		marginTop: 15,
 	},
 	number: {
-		fontSize: 25,
+		fontSize: 28,
 		textAlign: 'center',
 	},
 	backspace: {
