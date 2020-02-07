@@ -10,6 +10,7 @@ import {
 	Image,
 	ViewPropTypes
 } from 'react-native';
+import { Icon } from "native-base"
 
 import styles from './VirtualKeyboard.style';
 
@@ -58,8 +59,9 @@ class VirtualKeyboard extends Component {
 
 	Backspace() {
 		return (
-			<TouchableOpacity accessibilityLabel='backspace' style={styles.backspace} onPress={() => { this.onPress('back') }}>
-				<Image source={this.props.backspaceImg} resizeMode='contain' style={this.props.applyBackspaceTint && ({ tintColor: this.props.color })} />
+			<TouchableOpacity accessibilityLabel='backspace' style={[styles.backspace,this.props.cellStyle]} onPress={() => { this.onPress('back') }}>
+				{/* <Image source={this.props.backspaceImg} resizeMode='contain' style={this.props.applyBackspaceTint && ({ tintColor: this.props.color })} /> */}
+				<Icon style={[styles.number, { color: this.props.color }]} name={this.props.backspaceIcon || "backspace"} type={this.props.backspaceIconType || "MaterialIcons"}/>
 			</TouchableOpacity>
 		);
 	}
@@ -76,7 +78,7 @@ class VirtualKeyboard extends Component {
 	Cell(symbol) {
 		return (
 			<TouchableOpacity style={[styles.cell, this.props.cellStyle]} key={symbol} accessibilityLabel={symbol.toString()} onPress={() => { this.onPress(symbol.toString()) }}>
-				<Text style={[styles.number, { color: this.props.color }]}>{symbol}</Text>
+				<Text style={[styles.number, this.props.textStyle, { color: this.props.color }]}>{symbol}</Text>
 			</TouchableOpacity>
 		);
 	}
