@@ -49,19 +49,22 @@ class VirtualKeyboard extends Component {
 				{this.Row([4, 5, 6])}
 				{this.Row([7, 8, 9])}
 				<View style={[styles.row, this.props.rowStyle]}>
-					{this.props.decimal ? this.Cell('.') : <View style={{ flex: 1 }} /> }
+					{this.props.hasLeft ? this.Cell(this.props.leftText) : <View style={{ flex: 1 }} /> }
 					{this.Cell(0)}
-					{this.Backspace()}
+					{this.rightButton()}
 				</View>
 			</View>
 		);
 	}
 
-	Backspace() {
+	
+
+
+	rightButton() {
 		return (
-			<TouchableOpacity accessibilityLabel='backspace' style={[styles.backspace,this.props.cellStyle]} onPress={() => { this.onPress('back') }}>
+			<TouchableOpacity accessibilityLabel='backspace' style={[styles.backspace,this.props.cellStyle]} onPress={this.props.onRightButtonClick}>
 				{/* <Image source={this.props.backspaceImg} resizeMode='contain' style={this.props.applyBackspaceTint && ({ tintColor: this.props.color })} /> */}
-				<Icon style={[styles.number, { color: this.props.color }]} name={this.props.backspaceIcon || "backspace"} type={this.props.backspaceIconType || "MaterialIcons"}/>
+				<Icon style={[styles.number, { color: this.props.color },this.props.rightStyle]} name={this.props.rightIconName || "backspace"} type={this.props.rightIconType || "MaterialIcons"}/>
 			</TouchableOpacity>
 		);
 	}
@@ -89,7 +92,9 @@ class VirtualKeyboard extends Component {
 			if (isNaN(val)) {
 				if (val === 'back') {
 					curText = curText.slice(0, -1);
-				} else {
+				} else if(val.toLowerCase() === 'clear'){
+					curText = '';
+				}else{
 					curText += val;
 				}
 			} else {
