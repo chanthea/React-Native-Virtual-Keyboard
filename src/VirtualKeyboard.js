@@ -40,7 +40,16 @@ class VirtualKeyboard extends Component {
 		this.state = {
 			text: '',
 		};
+		
+		this.lastPress = 0;
 	}
+
+	componentDidMount() {
+		this.props.onRef(this)
+	  }
+	  componentWillUnmount() {
+		this.props.onRef(undefined)
+	  }
 
 	render() {
 		return (
@@ -49,7 +58,7 @@ class VirtualKeyboard extends Component {
 				{this.Row([4, 5, 6])}
 				{this.Row([7, 8, 9])}
 				<View style={[styles.row, this.props.rowStyle]}>
-					{this.props.hasLeft ? this.Cell(this.props.leftText) : <View style={{ flex: 1 }} /> }
+					{this.props.hasLeft ? this.LeftCell(this.props.leftText) : <View style={{ flex: 1 }} /> }
 					{this.Cell(0)}
 					{this.rightButton()}
 				</View>
@@ -57,7 +66,11 @@ class VirtualKeyboard extends Component {
 		);
 	}
 
-	
+	resetText = () =>{
+		this.setState({
+			text : ''
+		})
+	}	
 
 
 	rightButton() {
@@ -78,6 +91,14 @@ class VirtualKeyboard extends Component {
 		);
 	}
 
+	LeftCell(symbol) {
+		return (
+			<TouchableOpacity onLongPress={this.props.leftDoubleClick}  style={[styles.cell, this.props.cellStyle]} key={symbol} accessibilityLabel={symbol.toString()} onPress={() => { this.onPress(symbol.toString()) }}>
+				<Text style={[styles.number, this.props.textStyle, { color: this.props.color }]}>{symbol}</Text>
+			</TouchableOpacity>
+		);
+	}
+
 	Cell(symbol) {
 		return (
 			<TouchableOpacity style={[styles.cell, this.props.cellStyle]} key={symbol} accessibilityLabel={symbol.toString()} onPress={() => { this.onPress(symbol.toString()) }}>
@@ -86,6 +107,23 @@ class VirtualKeyboard extends Component {
 		);
 	}
 
+	onDoublePress = () => {
+		const time = new Date().getTime();
+		const delta = time - this.lastPress;
+
+		const DOUBLE_PRESS_DELAY = this.props.delayPress || 300;
+		if (delta < DOUBLE_PRESS_DELAY) {
+			this.lastPress = time;
+			return true;
+		}else{
+			this.lastPress = time;
+			return false;
+		}
+		
+	
+	};
+
+
 	onPress(val) {
 		if (this.props.pressMode === 'string') {
 			let curText = this.state.text;
@@ -93,13 +131,21 @@ class VirtualKeyboard extends Component {
 				if (val === 'back') {
 					curText = curText.slice(0, -1);
 				} else if(val.toLowerCase() === 'clear'){
-					curText = '';
+					const isDoublePress = this.onDoublePress();
+					if(isDoublePress){
+						this.props.leftDoubleClick();
+						return;
+					}else{
+						curText = '';
+					}
+				
 				}else{
 					curText += val;
 				}
 			} else {
 				curText += val;
 			}
+			console.log('key Text', curText)
 			this.setState({ text: curText });
 			this.props.onPress(curText);
 		} else /* if (props.pressMode == 'char')*/ {
