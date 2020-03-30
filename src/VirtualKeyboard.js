@@ -78,6 +78,7 @@ class VirtualKeyboard extends Component {
 			<TouchableOpacity accessibilityLabel='backspace' style={[styles.backspace,this.props.cellStyle]} onPress={this.props.onRightButtonClick}>
 				{/* <Image source={this.props.backspaceImg} resizeMode='contain' style={this.props.applyBackspaceTint && ({ tintColor: this.props.color })} /> */}
 				<Icon style={[styles.number, { color: this.props.color },this.props.rightStyle]} name={this.props.rightIconName || "backspace"} type={this.props.rightIconType || "MaterialIcons"}/>
+				{this.props.rightButtonTitle && <Text style={{position :"absolute", bottom : 5, color : 'grey', fontSize : 13}}>{this.props.rightButtonTitle}</Text>}
 			</TouchableOpacity>
 		);
 	}
@@ -145,7 +146,6 @@ class VirtualKeyboard extends Component {
 			} else {
 				curText += val;
 			}
-			console.log('key Text', curText)
 			this.setState({ text: curText });
 			this.props.onPress(curText);
 		} else /* if (props.pressMode == 'char')*/ {
